@@ -109,7 +109,7 @@ function getCSS(dark){
   };
   const t=dark?d:l;
   return `
-
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:${t.bg};--surface:${t.surface};--surface-hover:${t.surfaceHover};
@@ -125,7 +125,7 @@ function getCSS(dark){
   --cal-icon:${t.calIcon};
   --mesh-a:${t.meshA};--mesh-b:${t.meshB};--mesh-c:${t.meshC};
   --scrollbar:${t.scrollbar};
-  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;--mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;--display:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;--radius:12px;--radius-sm:8px;
+  --font:'Outfit',sans-serif;--mono:'DM Mono',monospace;--display:'Syne',sans-serif;--radius:12px;--radius-sm:8px;
 }
 ::placeholder{color:var(--text3)}input,select,textarea{outline:none}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:2px}
@@ -146,9 +146,9 @@ input[type="date"]::-webkit-calendar-picker-indicator,input[type="time"]::-webki
 .theme-btn:hover{border-color:var(--glass-border-hover);color:var(--text2)}
 .nav-tabs{display:flex;gap:2px;background:var(--glass);border:1px solid var(--glass-border);border-radius:10px;padding:3px}
 .nav-tab{padding:5px 12px;border-radius:7px;border:none;background:transparent;color:var(--text3);font-family:var(--mono);font-size:0.7rem;cursor:pointer;transition:all .2s;position:relative;white-space:nowrap}
-.nav-tab.active{background:var(--indigo);color:#fff;box-shadow:0 2px 8px var(--indigo-glow)}
+.nav-tab.active{background:var(--indigo-dim);color:var(--indigo-bright);box-shadow:0 0 12px var(--indigo-glow)}
 .nav-tab .dot{position:absolute;top:3px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--red);box-shadow:0 0 5px var(--red-dim)}
-.page{padding:20px 24px;max-width:900px}
+.page{padding:20px 24px;max-width:820px;margin:0 auto}
 .card{background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);transition:border-color .2s,background .25s}
 .card:hover{border-color:var(--glass-border-hover)}
 .section-label{font-family:var(--mono);font-size:0.6rem;color:var(--text3);letter-spacing:.1em;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
@@ -1151,6 +1151,7 @@ function TodayDashboard({agendas,setAgendas,projects,setProjects,study,setStudy,
   const doneAgendas=(agendas||[]).filter(ag=>ag.tasks?.length>0&&ag.tasks.every(t=>t.done)).length;
 
   const [dragOverLeft,setDragOverLeft]=useState(false);
+  const [pendingCollapsed,setPendingCollapsed]=useState(false);
   const handleLeftDrop=(e)=>{e.preventDefault();setDragOverLeft(false);try{const item=JSON.parse(e.dataTransfer.getData("application/json"));dragToToday(item);}catch(err){}};
   const handleLeftDragOver=(e)=>{e.preventDefault();setDragOverLeft(true);};
   const handleLeftDragLeave=()=>setDragOverLeft(false);
@@ -1220,10 +1221,23 @@ function TodayDashboard({agendas,setAgendas,projects,setProjects,study,setStudy,
           ))}
         </div>
 
-        {/* RIGHT COLUMN: Pending (overdue) + Upcoming */}
+        {/* RIGHT COLUMN: Important Notes + collapsible Pending + Upcoming */}
         <div>
-          <div className="section-label">PENDING<span style={{color:pendingItems.length>0?"var(--red)":"var(--text3)"}}>{pendingItems.length} overdue</span></div>
-          {pendingItems.length===0?(
+          <div className="section-label">IMPORTANT NOTES<span style={{color:"var(--text4)"}}>auto-saves</span></div>
+          <textarea
+            className="inp"
+            rows={3}
+            placeholder="Important notes — always visible when you open"
+            value={notes||""}
+            onChange={e=>setNotes(e.target.value)}
+            style={{resize:"vertical",fontFamily:"var(--mono)",fontSize:"0.82rem",lineHeight:1.6,marginBottom:14}}
+          />
+
+          <div className="section-label" style={{cursor:"pointer",userSelect:"none"}} onClick={()=>setPendingCollapsed(c=>!c)}>
+            <span>{pendingCollapsed?"▸":"▾"} PENDING</span>
+            <span style={{color:pendingItems.length>0?"var(--red)":"var(--text3)"}}>{pendingItems.length} overdue</span>
+          </div>
+          {!pendingCollapsed&&(pendingItems.length===0?(
             <div className="empty-card subtle">Nothing overdue ✓</div>
           ):pendingItems.map((p,i)=>(
             <div key={`p-${i}`} className="today-task overdue draggable" draggable={!(p.isAgendaShell||p.isProjectShell)} onDragStart={(e)=>{e.dataTransfer.setData("application/json",dragData(p));e.dataTransfer.effectAllowed="move";}} title="Drag to today's tasks">
@@ -1237,7 +1251,7 @@ function TodayDashboard({agendas,setAgendas,projects,setProjects,study,setStudy,
               </div>
               <DeadlineBadge dateStr={p.task.deadline} done={false} sm/>
             </div>
-          ))}
+          )))}
 
           <div className="section-label" style={{marginTop:14}}>UPCOMING<span>{upcomingItems.length} ahead</span></div>
           {upcomingItems.length===0?(
@@ -1271,19 +1285,6 @@ function TodayDashboard({agendas,setAgendas,projects,setProjects,study,setStudy,
           </div>
           :<EntryCard entry={studyEntry} idx={activeStudyIdx} done={!!completed[activeStudyIdx]} onDone={markStudyDone} onUndone={markStudyUndone} onAddVideo={()=>{}} onRemoveVideo={()=>{}} showAddVideo={false} manualUrl="" setManualUrl={()=>{}} manualTitle="" setManualTitle={()=>{}} manualDur="" setManualDur={()=>{}} onSaveVideo={()=>{}} onCancelVideo={()=>{}} label={overdueStudy>0?`Overdue session ${activeStudyIdx+1}`:todayStudyIdx>=0?"Today's session":`Upcoming · entry ${activeStudyIdx+1}`}/>
         }
-      </div>
-
-      {/* Notes */}
-      <div>
-        <div className="section-label" style={{marginBottom:8}}>NOTES<span style={{color:"var(--text4)"}}>auto-saves</span></div>
-        <textarea
-          className="inp"
-          rows={5}
-          placeholder="Quick notes, reminders, ideas…"
-          value={notes||""}
-          onChange={e=>setNotes(e.target.value)}
-          style={{resize:"vertical",fontFamily:"var(--mono)",fontSize:"0.82rem",lineHeight:1.6}}
-        />
       </div>
     </div>
   );
