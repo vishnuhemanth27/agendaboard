@@ -146,7 +146,7 @@ input[type="date"]::-webkit-calendar-picker-indicator,input[type="time"]::-webki
 .theme-btn:hover{border-color:var(--glass-border-hover);color:var(--text2)}
 .nav-tabs{display:flex;gap:2px;background:var(--glass);border:1px solid var(--glass-border);border-radius:10px;padding:3px}
 .nav-tab{padding:5px 12px;border-radius:7px;border:none;background:transparent;color:var(--text3);font-family:var(--mono);font-size:0.7rem;cursor:pointer;transition:all .2s;position:relative;white-space:nowrap}
-.nav-tab.active{background:var(--indigo-dim);color:var(--indigo-bright);box-shadow:0 0 12px var(--indigo-glow)}
+.nav-tab.active{background:var(--indigo);color:#fff;box-shadow:0 2px 8px var(--indigo-glow)}
 .nav-tab .dot{position:absolute;top:3px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--red);box-shadow:0 0 5px var(--red-dim)}
 .page{padding:20px 24px;max-width:900px}
 .card{background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);transition:border-color .2s,background .25s}
