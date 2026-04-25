@@ -5,7 +5,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChang
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
 
 const firebaseConfig = {
-apiKey: "AIzaSyBUjSbsf9f7PLJRjSzeTXnVuKoUTG5TfSA",
+  apiKey: "AIzaSyBUjSbsf9f7PLJRjSzeTXnVuKoUTG5TfSA",
   authDomain: "agendaboard-8b3f2.firebaseapp.com",
   projectId: "agendaboard-8b3f2",
   storageBucket: "agendaboard-8b3f2.firebasestorage.app",
