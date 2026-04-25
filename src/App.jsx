@@ -109,7 +109,7 @@ function getCSS(dark){
   };
   const t=dark?d:l;
   return `
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
+;
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:${t.bg};--surface:${t.surface};--surface-hover:${t.surfaceHover};
@@ -125,7 +125,7 @@ function getCSS(dark){
   --cal-icon:${t.calIcon};
   --mesh-a:${t.meshA};--mesh-b:${t.meshB};--mesh-c:${t.meshC};
   --scrollbar:${t.scrollbar};
-  --font:'Outfit',sans-serif;--mono:'DM Mono',monospace;--display:'Syne',sans-serif;--radius:12px;--radius-sm:8px;
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;--mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;--display:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;--radius:12px;--radius-sm:8px;
 }
 ::placeholder{color:var(--text3)}input,select,textarea{outline:none}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:2px}
